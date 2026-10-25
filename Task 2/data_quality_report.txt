@@ -1,0 +1,48 @@
+== rows and primary-key duplicates ==
+town: 26 rows, duplicate keys: 0
+hdb_building: 7,921 rows, duplicate keys: 0
+hdb_flat: 28,725 rows, duplicate keys: 0
+resale_transaction: 37,153 rows, duplicate keys: 0
+hawker_centre: 131 rows, duplicate keys: 0
+proximity: 25,223 rows, duplicate keys: 0
+
+== foreign-key orphans (should all be 0) ==
+hdb_building.town_id: 0
+hdb_flat.building_id: 0
+resale_transaction.flat_id: 0
+proximity.building_id: 0
+proximity.hawker_id: 0
+
+== other uniqueness / range checks ==
+duplicate (town, block, street): 0
+non-positive prices: 0
+storey_lower > storey_upper: 0
+walking distance shorter than straight-line: 0
+pairs at or beyond the 2400 m cutoff: 0
+transaction months: 2015-01-01 to 2016-12-01
+
+== NULL counts (NULL is only expected where no source has the value) ==
+town: none
+hdb_building: none
+hdb_flat: none
+resale_transaction: none
+hawker_centre: address=16, centre_type=24, latitude=1, longitude=1, total_stalls=24, cooked_food_stalls=24, market_produce_stalls=24
+proximity: none
+
+== coordinates ==
+hdb_building: 0 rows without coordinates (NULL), 0 outside Singapore
+hawker_centre: 1 rows without coordinates (NULL), 0 outside Singapore
+building coordinate sources:
+hdb_dataset    7921
+
+== hawker sources ==
+gov+geo     105
+geo_only     24
+gov_only      1
+gov+hdb       1
+
+== proximity (estimated walking distance = 1.5 x straight-line) ==
+level 1 (Walking distance, 0.0-0.8 km): 4,663 pairs
+level 2 (Nearby, 0.8-1.6 km): 9,064 pairs
+level 3 (Accessible, 1.6-2.4 km): 11,496 pairs
+buildings with a hawker centre within 2400 m walking: 7,452 of 7,921
