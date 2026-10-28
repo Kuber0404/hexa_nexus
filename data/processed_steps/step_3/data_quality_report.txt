@@ -1,0 +1,78 @@
+resale files: Resale flat prices based on registration date from Jan-2017 onwards.csv, Resale Flat Prices (Based on Registration Date), From Jan 2015 to Dec 2016.csv, Resale Flat Prices (Based on Registration Date), From Mar 2012 to Dec 2014.csv
+
+== rows and primary-key duplicates ==
+town: 26 rows, duplicate keys: 0
+hdb_building: 9,817 rows, duplicate keys: 0
+hdb_flat: 116,254 rows, duplicate keys: 0
+resale_transaction: 330,839 rows, duplicate keys: 0
+hawker_centre: 131 rows, duplicate keys: 0
+proximity_level: 3 rows, duplicate keys: 0
+proximity: 30,499 rows, duplicate keys: 0
+
+== alternate-key duplicates (should all be 0) ==
+town.town_name: 0
+hdb_building (block, street_name): 0
+hdb_flat full profile: 0
+hawker_centre.centre_name: 0
+proximity_level.label: 0
+
+== foreign-key orphans (should all be 0) ==
+hdb_building.town_id: 0
+hdb_flat.building_id: 0
+resale_transaction.flat_id: 0
+proximity.building_id: 0
+proximity.hawker_id: 0
+
+== Task 1 CHECK constraints (violations, should all be 0) ==
+text not upper-case/trimmed: town_name 0, block 0, street_name 0, flat_model 0
+flat_type outside the 7 HDB types: 0
+floor_area_sqm <= 0: 0
+storey_lower < 1 or > storey_upper: 0
+lease_commence_year outside 1960-2100: 0
+resale_price <= 0: 0
+transaction_month not the 1st or before 1990: 0
+remaining lease outside 0-1188 months: 0
+centre_type outside HC/MHC/MK: 0
+stall count negative or part > total: 0
+building coordinate_source 'none' but has coordinates (or the reverse): 0
+negative distances: 0
+
+== proximity levels ==
+pairs in no level: 0, pairs in more than one level: 0
+level 1 (Walking distance, 0.0-0.8 km): 5,612 pairs
+level 2 (Nearby, 0.8-1.6 km): 10,944 pairs
+level 3 (Accessible, 1.6-2.4 km): 13,943 pairs
+buildings with a hawker centre within 2400 m walking: 9,189 of 9,817
+buildings by level of their nearest centre:
+  level 1 (Walking distance): 4,042
+  level 2 (Nearby): 3,646
+  level 3 (Accessible): 1,501
+  none within 2400 m: 628
+
+transaction months: 2012-03-01 to 2026-09-01
+years covered: 2012-2026 (15 years)
+
+== NULL counts (NULL is only expected where no source has the value) ==
+town: none
+hdb_building: latitude=2, longitude=2
+hdb_flat: none
+resale_transaction: reported_remaining_lease_months=52203
+hawker_centre: address=16, centre_type=24, latitude=1, longitude=1, total_stalls=24, cooked_food_stalls=24, market_produce_stalls=24
+proximity_level: none
+proximity: none
+
+== coordinates ==
+hdb_building: 2 rows without coordinates (NULL), 0 outside Singapore
+hawker_centre: 1 rows without coordinates (NULL), 0 outside Singapore
+building coordinate sources:
+coordinate_source
+hdb_dataset     9814
+none               2
+onemap_exact       1
+
+== hawker sources ==
+data_source
+gov+geo     105
+geo_only     24
+gov_only      1
+gov+hdb       1

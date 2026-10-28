@@ -1,0 +1,12 @@
+proximity_class,nearest_centre_type,towns,transactions,avg_price_per_sqm
+Walking distance,HC,9,320,7169.33
+Walking distance,MHC,19,6811,7211.02
+Walking distance,MK,1,381,9064.36
+Walking distance,UNKNOWN,15,5916,5960.58
+Nearby,HC,5,153,6069.65
+Nearby,MHC,17,3300,6536.73
+Nearby,MK,2,20,8111.05
+Nearby,UNKNOWN,16,10282,5883.99
+Accessible,HC,1,22,5306.44
+Accessible,MHC,12,641,5907.31
+Accessible,UNKNOWN,14,4095,5710.86

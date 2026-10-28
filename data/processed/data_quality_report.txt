@@ -33,9 +33,11 @@ proximity: none
 hdb_building: 0 rows without coordinates (NULL), 0 outside Singapore
 hawker_centre: 1 rows without coordinates (NULL), 0 outside Singapore
 building coordinate sources:
+coordinate_source
 hdb_dataset    7921
 
 == hawker sources ==
+data_source
 gov+geo     105
 geo_only     24
 gov_only      1

@@ -1,0 +1,4 @@
+level_id,label,min_dist_m,max_dist_m
+1,Walking distance,0,800
+2,Nearby,800,1600
+3,Accessible,1600,2400
