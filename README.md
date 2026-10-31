@@ -7,7 +7,7 @@ Team project for SD6103 Data Systems (AY26S1). We build a PostgreSQL database th
 | 1 | ER model, relational schema, SQL to create it | Done: `Task 1/revised/` |
 | 2 | Python ETL that turns the raw files into one CSV per table | Done: `Task 2/` |
 | 3 | SQL queries Q1–Q6, insights, runtime at 5 database sizes | Done: `Task 3/` |
-| 4 | Indexes and their effect on runtime | Not started |
+| 4 | Indexes and their effect on runtime | Done: `Task 4/` |
 
 ## Repository layout
 
@@ -28,6 +28,11 @@ Team project for SD6103 Data Systems (AY26S1). We build a PostgreSQL database th
 │   ├── Task 3 Queries and Measurements.ipynb
 │   ├── queries.sql
 │   ├── task3_report.md
+│   └── results/
+├── Task 4/
+│   ├── Task 4 Index Experiments.ipynb
+│   ├── indexes.sql
+│   ├── task4_report.md
 │   └── results/
 └── data/
     ├── raw/                        source datasets, unchanged
@@ -75,6 +80,25 @@ The revised notebook has a `STEP` setting (1–5, or the environment variable `R
 
 The notebook's settings are `DB_NAME` (the database holding the `housing` schema), `STEP` (or the environment variable `TASK3_STEP`) and `RUNS`.
 
+## Task 4: indexes (`Task 4/`)
+
+| File | What it does |
+|---|---|
+| `indexes.sql` | The final `CREATE INDEX` (B-tree on `resale_transaction(transaction_month)`) with the reasoning in comments |
+| `Task 4 Index Experiments.ipynb` | Part A shows how each query reads the data (`EXPLAIN ANALYZE`). Part B tests nine candidate indexes one at a time. Part C runs `indexes.sql` and measures Q1–Q6 five times without and with the index. Parts D–F draw the chart, measure the cost of the index and test what indexes cannot fix |
+| `task4_report.md` | Task 4 report: initial four-index attempt, candidate screening, final index, results, cost and limitations |
+| `results/task4_measurements.csv` | Raw measurements: 60 rows (6 queries × 5 runs × with/without index) |
+| `results/task4_summary.csv` | Average, standard deviation, min, max, change and speed-up per query |
+| `results/task4_runtime_with_vs_without_index.png` | Bar chart, one panel per query |
+| `results/task4_candidate_screening.csv`, `.png`, `task4_candidate_summary.csv` | Raw runs, heat map and summary of the nine candidates |
+| `results/task4_combination_tests.csv` | Candidates tested in combination |
+| `results/task4_index_cost.csv` | Index size, build time and insert slowdown |
+| `results/task4_supporting_experiments.csv` | Q2 `work_mem` and Q3 `NOT MATERIALIZED` runs |
+| `results/task4_environment.json` | PostgreSQL version, CPU count and settings of the measuring machine |
+| `results/plans/` | `EXPLAIN ANALYZE` of every query without and with the index |
+
+Task 4 is measured on the largest database (step 5) only. The notebook's setting is `DB_NAME` (or the environment variable `TASK4_DB`); it stops if the database does not hold 987,686 sales.
+
 ## Data (`data/`)
 
 | Path | Content |
@@ -110,6 +134,7 @@ python3 -m venv .venv
 2. Create the schema: in any SQL tool connected to your database, run `DROP SCHEMA IF EXISTS housing CASCADE;` and then all of `Task 1/revised/schema.sql`.
 3. Load the data: in `Task 1/revised/load_data.sql`, change the 7 paths to your repository folder and to the step you want (`data/processed_steps/step_k/`), then run it. Each `COPY` prints the rows loaded. Use `COPY`, not `\copy`; `\copy` only works inside psql.
 4. Measure: in the Task 3 notebook set `DB_NAME` and `STEP`, then run all cells. Rerunning a step replaces that step's rows in the measurements file.
+5. Index experiments: load step 5, run `VACUUM (ANALYZE)` on all tables (without fresh statistics Q4 and Q5 ran about 1.8 times slower), set `DB_NAME` (or `TASK4_DB`) in the Task 4 notebook and run all cells. It removes leftover `idx_*` indexes first, and leaves the final index in place at the end (remove it with `DROP INDEX housing.idx_resale_transaction_month;`).
 
 The ETL renumbers the surrogate keys on every run, so each step is a full reload of all 7 tables, not an append.
 
@@ -126,6 +151,8 @@ These were agreed after comparing the first Task 1 design with the first ETL:
 - Step 1 uses the 2017 onwards file, because Q1 needs a 3-year range and the 2015–2016 file covers only two years.
 - Q5's budget is SGD 450,000. The first value, 600,000, returned no rows at steps 4 and 5.
 - Query insights use step 1. Later steps mix prices from 1990 to 2026 without inflation adjustment.
+- Task 4 keeps one index, a B-tree on `resale_transaction(transaction_month)`. It makes Q1 about 30% faster and Q6 about 10% slower; Q2–Q5 are unaffected. Eight other candidates were tested and rejected (see `task4_report.md`).
+- A BRIN index on the same column helped Q1 and Q6 and is much smaller, but it is not submitted: it only works when the dates follow the physical row order, which is a side effect of how the files were loaded.
 
 ## Known data issues
 
@@ -139,3 +166,4 @@ These were agreed after comparing the first Task 1 design with the first ETL:
 - `Task 2/Resale Flat Prices ... Jan 2015 to Dec 2016.csv` is an old committed copy of the file in `data/raw/flat_resale_prices/` and can be removed.
 - `data/processed/onemap_search_cache.json` is the first notebook's copy of the cache. Both notebooks now use `data/cache/`.
 - `load_data.sql` and the Task 3 notebook's `DB_NAME` contain values for one team member's machine; change them before running.
+- The Task 4 notebook's default `DB_NAME` is one team member's database; change it before running.

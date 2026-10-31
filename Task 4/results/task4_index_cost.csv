@@ -1,0 +1,2 @@
+index,size_mb,table_heap_mb,size_vs_table_pct,build_plus_analyze_ms,insert_100k_without_ms,insert_100k_with_ms,insert_slowdown_pct
+idx_resale_transaction_month,6.73,49.1,13.7,148.4,203.0,288.9,42.4

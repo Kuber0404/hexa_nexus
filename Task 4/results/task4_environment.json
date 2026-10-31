@@ -1,0 +1,13 @@
+{
+  "measured_at": "2026-11-01T01:37:07",
+  "postgres": "18.4 (Postgres.app)",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "cpu_count": 10,
+  "shared_buffers": "128MB",
+  "work_mem": "4MB",
+  "max_parallel_workers_per_gather": "2",
+  "jit": "on",
+  "random_page_cost": "4",
+  "transactions": 987686,
+  "db_size_mb": 130.71
+}

@@ -1,0 +1,86 @@
+Sort  (cost=20104.11..20104.13 rows=9 width=93) (actual time=40.385..41.034 rows=11.00 loops=1)
+  Sort Key: l.level_id, (COALESCE(h.centre_type, 'UNKNOWN'::text))
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=9632
+  ->  GroupAggregate  (cost=19206.71..20103.97 rows=9 width=93) (actual time=34.119..41.028 rows=11.00 loops=1)
+        Group Key: (COALESCE(h.centre_type, 'UNKNOWN'::text)), l.label
+        Buffers: shared hit=9632
+        ->  Gather Merge  (cost=19206.71..20001.47 rows=6824 width=60) (actual time=34.107..37.299 rows=31941.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=9632
+              ->  Sort  (cost=18206.68..18213.79 rows=2843 width=60) (actual time=32.575..32.799 rows=10647.00 loops=3)
+                    Sort Key: (COALESCE(h.centre_type, 'UNKNOWN'::text)), l.label, t.town_id
+                    Sort Method: quicksort  Memory: 982kB
+                    Buffers: shared hit=9632
+                    Worker 0:  Sort Method: quicksort  Memory: 973kB
+                    Worker 1:  Sort Method: quicksort  Memory: 959kB
+                    ->  Parallel Hash Join  (cost=5439.34..18043.59 rows=2843 width=60) (actual time=22.550..29.421 rows=10647.00 loops=3)
+                          Hash Cond: (rt.flat_id = f.flat_id)
+                          Buffers: shared hit=9602
+                          ->  Parallel Seq Scan on resale_transaction rt  (cost=0.00..12464.04 rows=32932 width=10) (actual time=4.778..8.983 rows=26768.67 loops=3)
+                                Filter: ((transaction_month >= '2022-01-01'::date) AND (transaction_month < '2025-01-01'::date))
+                                Rows Removed by Filter: 302460
+                                Buffers: shared hit=6291
+                          ->  Parallel Hash  (cost=5346.06..5346.06 rows=7462 width=29) (actual time=17.740..17.744 rows=19439.33 loops=3)
+                                Buckets: 65536 (originally 16384)  Batches: 1 (originally 1)  Memory Usage: 4800kB
+                                Buffers: shared hit=3311
+                                ->  Hash Join  (cost=2795.43..5346.06 rows=7462 width=29) (actual time=11.237..14.864 rows=19439.33 loops=3)
+                                      Hash Cond: (f.building_id = b.building_id)
+                                      Buffers: shared hit=3311
+                                      ->  Parallel Seq Scan on hdb_flat f  (cost=0.00..2336.40 rows=37224 width=13) (actual time=0.002..1.824 rows=21009.33 loops=3)
+                                            Filter: (flat_type = '4 ROOM'::text)
+                                            Rows Removed by Filter: 27969
+                                            Buffers: shared hit=1256
+                                      ->  Hash  (cost=2770.33..2770.33 rows=2008 width=28) (actual time=11.231..11.234 rows=9246.00 loops=3)
+                                            Buckets: 16384 (originally 2048)  Batches: 1 (originally 1)  Memory Usage: 677kB
+                                            Buffers: shared hit=2055
+                                            ->  Hash Join  (cost=2494.46..2770.33 rows=2008 width=28) (actual time=8.863..10.570 rows=9246.00 loops=3)
+                                                  Hash Cond: (b.town_id = t.town_id)
+                                                  Buffers: shared hit=2055
+                                                  ->  Hash Join  (cost=2492.86..2762.63 rows=2008 width=28) (actual time=8.845..9.965 rows=9246.00 loops=3)
+                                                        Hash Cond: (b.building_id = proximity.building_id)
+                                                        Buffers: shared hit=2052
+                                                        ->  Seq Scan on hdb_building b  (cost=0.00..212.14 rows=10014 width=8) (actual time=0.010..0.264 rows=10014.00 loops=3)
+                                                              Buffers: shared hit=336
+                                                        ->  Hash  (cost=2467.76..2467.76 rows=2008 width=20) (actual time=8.831..8.833 rows=9246.00 loops=3)
+                                                              Buckets: 16384 (originally 2048)  Batches: 1 (originally 1)  Memory Usage: 605kB
+                                                              Buffers: shared hit=1716
+                                                              ->  Nested Loop  (cost=6.40..2467.76 rows=2008 width=20) (actual time=0.072..8.258 rows=9246.00 loops=3)
+                                                                    Join Filter: ((proximity.distance_m >= l.min_dist_m) AND (proximity.distance_m < l.max_dist_m))
+                                                                    Rows Removed by Join Filter: 18492
+                                                                    Buffers: shared hit=1716
+                                                                    ->  Hash Join  (cost=6.40..2150.51 rows=6023 width=13) (actual time=0.060..5.775 rows=9246.00 loops=3)
+                                                                          Hash Cond: (proximity.hawker_id = h.hawker_id)
+                                                                          Buffers: shared hit=1713
+                                                                          ->  Unique  (cost=0.45..2119.91 rows=9195 width=14) (actual time=0.035..5.132 rows=9246.00 loops=3)
+                                                                                Buffers: shared hit=1704
+                                                                                ->  Incremental Sort  (cost=0.45..2042.64 rows=30908 width=14) (actual time=0.035..4.231 rows=30908.00 loops=3)
+                                                                                      Sort Key: proximity.building_id, proximity.distance_m, proximity.hawker_id
+                                                                                      Presorted Key: proximity.building_id
+                                                                                      Full-sort Groups: 908  Sort Method: quicksort  Average Memory: 26kB  Peak Memory: 26kB
+                                                                                      Buffers: shared hit=1704
+                                                                                      Worker 0:  Full-sort Groups: 908  Sort Method: quicksort  Average Memory: 26kB  Peak Memory: 26kB
+                                                                                      Worker 1:  Full-sort Groups: 908  Sort Method: quicksort  Average Memory: 26kB  Peak Memory: 26kB
+                                                                                      ->  Index Scan using proximity_pkey on proximity  (cost=0.29..1202.09 rows=30908 width=14) (actual time=0.008..1.453 rows=30908.00 loops=3)
+                                                                                            Index Searches: 3
+                                                                                            Buffers: shared hit=1592
+                                                                          ->  Hash  (cost=4.31..4.31 rows=131 width=7) (actual time=0.023..0.023 rows=131.00 loops=3)
+                                                                                Buckets: 1024  Batches: 1  Memory Usage: 14kB
+                                                                                Buffers: shared hit=9
+                                                                                ->  Seq Scan on hawker_centre h  (cost=0.00..4.31 rows=131 width=7) (actual time=0.011..0.018 rows=131.00 loops=3)
+                                                                                      Buffers: shared hit=9
+                                                                    ->  Materialize  (cost=0.00..1.04 rows=3 width=22) (actual time=0.000..0.000 rows=3.00 loops=27738)
+                                                                          Storage: Memory  Maximum Storage: 17kB
+                                                                          Buffers: shared hit=3
+                                                                          ->  Seq Scan on proximity_level l  (cost=0.00..1.03 rows=3 width=22) (actual time=0.011..0.011 rows=3.00 loops=3)
+                                                                                Buffers: shared hit=3
+                                                  ->  Hash  (cost=1.27..1.27 rows=27 width=4) (actual time=0.016..0.016 rows=27.00 loops=3)
+                                                        Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                                        Buffers: shared hit=3
+                                                        ->  Seq Scan on town t  (cost=0.00..1.27 rows=27 width=4) (actual time=0.013..0.014 rows=27.00 loops=3)
+                                                              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=30
+Planning Time: 0.424 ms
+Execution Time: 41.066 ms

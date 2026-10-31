@@ -1,0 +1,53 @@
+Finalize GroupAggregate  (cost=17456.88..17518.26 rows=189 width=57) (actual time=56.042..57.063 rows=52.00 loops=1)
+  Group Key: t.town_name, f.flat_type
+  Buffers: shared hit=7902
+  ->  Gather Merge  (cost=17456.88..17509.75 rows=454 width=57) (actual time=56.036..57.017 rows=150.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=7902
+        ->  Sort  (cost=16456.85..16457.33 rows=189 width=57) (actual time=49.083..49.085 rows=50.00 loops=3)
+              Sort Key: t.town_name, f.flat_type
+              Sort Method: quicksort  Memory: 31kB
+              Buffers: shared hit=7902
+              Worker 0:  Sort Method: quicksort  Memory: 31kB
+              Worker 1:  Sort Method: quicksort  Memory: 30kB
+              ->  Partial HashAggregate  (cost=16447.35..16449.71 rows=189 width=57) (actual time=48.656..48.666 rows=50.00 loops=3)
+                    Group Key: t.town_name, f.flat_type
+                    Batches: 1  Memory Usage: 64kB
+                    Buffers: shared hit=7886
+                    Worker 0:  Batches: 1  Memory Usage: 64kB
+                    Worker 1:  Batches: 1  Memory Usage: 48kB
+                    ->  Hash Join  (cost=3461.56..16147.77 rows=23966 width=28) (actual time=29.346..44.486 rows=17892.67 loops=3)
+                          Hash Cond: (b.town_id = t.town_id)
+                          Buffers: shared hit=7886
+                          ->  Hash Join  (cost=3459.96..16073.37 rows=23966 width=22) (actual time=29.296..42.618 rows=17892.67 loops=3)
+                                Hash Cond: (f.building_id = b.building_id)
+                                Buffers: shared hit=7883
+                                ->  Parallel Hash Join  (cost=3122.64..15673.13 rows=23966 width=22) (actual time=27.755..38.614 rows=17892.67 loops=3)
+                                      Hash Cond: (rt.flat_id = f.flat_id)
+                                      Buffers: shared hit=7547
+                                      ->  Parallel Seq Scan on resale_transaction rt  (cost=0.00..12464.04 rows=32932 width=10) (actual time=8.077..12.348 rows=26768.67 loops=3)
+                                            Filter: ((transaction_month >= '2022-01-01'::date) AND (transaction_month < '2025-01-01'::date))
+                                            Rows Removed by Filter: 302460
+                                            Buffers: shared hit=6291
+                                      ->  Parallel Hash  (cost=2336.40..2336.40 rows=62899 width=20) (actual time=19.226..19.226 rows=35472.00 loops=3)
+                                            Buckets: 131072  Batches: 1  Memory Usage: 6944kB
+                                            Buffers: shared hit=1256
+                                            ->  Parallel Seq Scan on hdb_flat f  (cost=0.00..2336.40 rows=62899 width=20) (actual time=0.006..9.787 rows=35472.00 loops=3)
+                                                  Filter: (flat_type = ANY ('{"4 ROOM","5 ROOM"}'::text[]))
+                                                  Rows Removed by Filter: 13506
+                                                  Buffers: shared hit=1256
+                                ->  Hash  (cost=212.14..212.14 rows=10014 width=8) (actual time=1.529..1.529 rows=10014.00 loops=3)
+                                      Buckets: 16384  Batches: 1  Memory Usage: 520kB
+                                      Buffers: shared hit=336
+                                      ->  Seq Scan on hdb_building b  (cost=0.00..212.14 rows=10014 width=8) (actual time=0.030..0.684 rows=10014.00 loops=3)
+                                            Buffers: shared hit=336
+                          ->  Hash  (cost=1.27..1.27 rows=27 width=14) (actual time=0.044..0.044 rows=27.00 loops=3)
+                                Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                                Buffers: shared hit=3
+                                ->  Seq Scan on town t  (cost=0.00..1.27 rows=27 width=14) (actual time=0.036..0.038 rows=27.00 loops=3)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=163
+Planning Time: 0.329 ms
+Execution Time: 57.092 ms

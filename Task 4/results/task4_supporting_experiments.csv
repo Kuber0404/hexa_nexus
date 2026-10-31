@@ -1,0 +1,21 @@
+condition,query,run,runtime_ms,rows_returned,result_md5,step
+Q2 default work_mem,Q2,1,532.036,90,ac273f87fcff,5
+Q2 default work_mem,Q2,2,385.676,90,ac273f87fcff,5
+Q2 default work_mem,Q2,3,380.581,90,ac273f87fcff,5
+Q2 default work_mem,Q2,4,399.609,90,ac273f87fcff,5
+Q2 default work_mem,Q2,5,387.318,90,ac273f87fcff,5
+Q2 work_mem=256MB,Q2,1,347.49,90,ac273f87fcff,5
+Q2 work_mem=256MB,Q2,2,362.916,90,ac273f87fcff,5
+Q2 work_mem=256MB,Q2,3,354.832,90,ac273f87fcff,5
+Q2 work_mem=256MB,Q2,4,357.268,90,ac273f87fcff,5
+Q2 work_mem=256MB,Q2,5,359.512,90,ac273f87fcff,5
+Q3 as written (materialised),Q3,1,209.69,369,017784c00b65,5
+Q3 as written (materialised),Q3,2,210.445,369,017784c00b65,5
+Q3 as written (materialised),Q3,3,210.703,369,017784c00b65,5
+Q3 as written (materialised),Q3,4,210.336,369,017784c00b65,5
+Q3 as written (materialised),Q3,5,209.984,369,017784c00b65,5
+Q3 NOT MATERIALIZED,Q3,1,110.568,369,017784c00b65,5
+Q3 NOT MATERIALIZED,Q3,2,110.063,369,017784c00b65,5
+Q3 NOT MATERIALIZED,Q3,3,111.26,369,017784c00b65,5
+Q3 NOT MATERIALIZED,Q3,4,108.952,369,017784c00b65,5
+Q3 NOT MATERIALIZED,Q3,5,108.679,369,017784c00b65,5

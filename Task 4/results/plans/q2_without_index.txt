@@ -1,0 +1,43 @@
+GroupAggregate  (cost=86233.12..255878.38 rows=678699 width=90) (actual time=196.534..455.085 rows=90.00 loops=1)
+  Group Key: t.town_name, (CASE WHEN ((99 - ((EXTRACT(year FROM rt.transaction_month))::integer - f.lease_commence_year)) < 50) THEN '1: < 50 years'::text WHEN ((99 - ((EXTRACT(year FROM rt.transaction_month))::integer - f.lease_commence_year)) < 70) THEN '2: 50-69 years'::text WHEN ((99 - ((EXTRACT(year FROM rt.transaction_month))::integer - f.lease_commence_year)) < 90) THEN '3: 70-89 years'::text ELSE '4: 90+ years'::text END)
+  Buffers: shared hit=7902, temp read=5557 written=5575
+  ->  Gather Merge  (cost=86233.12..201265.43 rows=987686 width=53) (actual time=196.511..284.079 rows=987686.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=7902, temp read=5557 written=5575
+        ->  Sort  (cost=85233.10..86261.94 rows=411536 width=53) (actual time=194.574..219.412 rows=329228.67 loops=3)
+              Sort Key: t.town_name, (CASE WHEN ((99 - ((EXTRACT(year FROM rt.transaction_month))::integer - f.lease_commence_year)) < 50) THEN '1: < 50 years'::text WHEN ((99 - ((EXTRACT(year FROM rt.transaction_month))::integer - f.lease_commence_year)) < 70) THEN '2: 50-69 years'::text WHEN ((99 - ((EXTRACT(year FROM rt.transaction_month))::integer - f.lease_commence_year)) < 90) THEN '3: 70-89 years'::text ELSE '4: 90+ years'::text END)
+              Sort Method: external merge  Disk: 14824kB
+              Buffers: shared hit=7902, temp read=5557 written=5575
+              Worker 0:  Sort Method: external merge  Disk: 14984kB
+              Worker 1:  Sort Method: external merge  Disk: 14648kB
+              ->  Hash Join  (cost=3539.65..32789.51 rows=411536 width=53) (actual time=5.995..141.455 rows=329228.67 loops=3)
+                    Hash Cond: (b.town_id = t.town_id)
+                    Buffers: shared hit=7886
+                    ->  Hash Join  (cost=3538.04..16105.45 rows=411536 width=21) (actual time=5.966..80.972 rows=329228.67 loops=3)
+                          Hash Cond: (f.building_id = b.building_id)
+                          Buffers: shared hit=7883
+                          ->  Parallel Hash Join  (cost=3200.72..14687.40 rows=411536 width=21) (actual time=5.223..55.047 rows=329228.67 loops=3)
+                                Hash Cond: (rt.flat_id = f.flat_id)
+                                Buffers: shared hit=7547
+                                ->  Parallel Seq Scan on resale_transaction rt  (cost=0.00..10406.36 rows=411536 width=14) (actual time=0.005..7.947 rows=329228.67 loops=3)
+                                      Buffers: shared hit=6291
+                                ->  Parallel Hash  (cost=2120.32..2120.32 rows=86432 width=15) (actual time=5.132..5.132 rows=48978.33 loops=3)
+                                      Buckets: 262144  Batches: 1  Memory Usage: 8992kB
+                                      Buffers: shared hit=1256
+                                      ->  Parallel Seq Scan on hdb_flat f  (cost=0.00..2120.32 rows=86432 width=15) (actual time=0.002..2.012 rows=48978.33 loops=3)
+                                            Buffers: shared hit=1256
+                          ->  Hash  (cost=212.14..212.14 rows=10014 width=8) (actual time=0.729..0.730 rows=10014.00 loops=3)
+                                Buckets: 16384  Batches: 1  Memory Usage: 520kB
+                                Buffers: shared hit=336
+                                ->  Seq Scan on hdb_building b  (cost=0.00..212.14 rows=10014 width=8) (actual time=0.013..0.383 rows=10014.00 loops=3)
+                                      Buffers: shared hit=336
+                    ->  Hash  (cost=1.27..1.27 rows=27 width=14) (actual time=0.019..0.019 rows=27.00 loops=3)
+                          Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                          Buffers: shared hit=3
+                          ->  Seq Scan on town t  (cost=0.00..1.27 rows=27 width=14) (actual time=0.015..0.015 rows=27.00 loops=3)
+                                Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=33
+Planning Time: 0.168 ms
+Execution Time: 458.565 ms

@@ -1,0 +1,76 @@
+Subquery Scan on by_class  (cost=20208.70..20274.02 rows=187 width=113) (actual time=82.263..83.416 rows=68.00 loops=1)
+  Buffers: shared hit=8409
+  ->  Finalize GroupAggregate  (cost=20208.70..20271.22 rows=187 width=81) (actual time=82.261..83.397 rows=68.00 loops=1)
+        Group Key: t.town_name, f.flat_type
+        Filter: ((avg(rt.resale_price) FILTER (WHERE (l.level_id = 1)) IS NOT NULL) AND (avg(rt.resale_price) FILTER (WHERE (l.level_id = 3)) IS NOT NULL))
+        Rows Removed by Filter: 63
+        Buffers: shared hit=8409
+        ->  Gather Merge  (cost=20208.70..20261.57 rows=454 width=81) (actual time=82.241..83.270 rows=393.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=8409
+              ->  Sort  (cost=19208.67..19209.15 rows=189 width=81) (actual time=80.581..80.587 rows=131.00 loops=3)
+                    Sort Key: t.town_name, f.flat_type
+                    Sort Method: quicksort  Memory: 42kB
+                    Buffers: shared hit=8409
+                    Worker 0:  Sort Method: quicksort  Memory: 42kB
+                    Worker 1:  Sort Method: quicksort  Memory: 42kB
+                    ->  Partial HashAggregate  (cost=19198.69..19201.53 rows=189 width=81) (actual time=80.497..80.517 rows=131.00 loops=3)
+                          Group Key: t.town_name, f.flat_type
+                          Batches: 1  Memory Usage: 104kB
+                          Buffers: shared hit=8393
+                          Worker 0:  Batches: 1  Memory Usage: 104kB
+                          Worker 1:  Batches: 1  Memory Usage: 104kB
+                          ->  Parallel Hash Join  (cost=4616.17..17307.46 rows=126082 width=25) (actual time=17.484..54.978 rows=308876.33 loops=3)
+                                Hash Cond: (rt.flat_id = f.flat_id)
+                                Buffers: shared hit=8393
+                                ->  Parallel Seq Scan on resale_transaction rt  (cost=0.00..10406.36 rows=411536 width=10) (actual time=0.004..7.213 rows=329228.67 loops=3)
+                                      Buffers: shared hit=6291
+                                ->  Parallel Hash  (cost=4285.15..4285.15 rows=26481 width=23) (actual time=17.450..17.452 rows=45392.67 loops=3)
+                                      Buckets: 262144 (originally 65536)  Batches: 1 (originally 1)  Memory Usage: 11584kB
+                                      Buffers: shared hit=2102
+                                      ->  Hash Join  (cost=1575.91..4285.15 rows=26481 width=23) (actual time=7.890..12.655 rows=45392.67 loops=3)
+                                            Hash Cond: (f.building_id = b.building_id)
+                                            Buffers: shared hit=2102
+                                            ->  Parallel Seq Scan on hdb_flat f  (cost=0.00..2120.32 rows=86432 width=15) (actual time=0.002..1.227 rows=48978.33 loops=3)
+                                                  Buffers: shared hit=1256
+                                            ->  Hash  (cost=1537.56..1537.56 rows=3068 width=20) (actual time=7.885..7.886 rows=9246.00 loops=3)
+                                                  Buckets: 16384 (originally 4096)  Batches: 1 (originally 1)  Memory Usage: 610kB
+                                                  Buffers: shared hit=846
+                                                  ->  Hash Join  (cost=1247.86..1537.56 rows=3068 width=20) (actual time=5.918..7.408 rows=9246.00 loops=3)
+                                                        Hash Cond: (b.town_id = t.town_id)
+                                                        Buffers: shared hit=846
+                                                        ->  Hash Join  (cost=1246.26..1526.63 rows=3068 width=14) (actual time=5.894..6.842 rows=9246.00 loops=3)
+                                                              Hash Cond: (b.building_id = proximity.building_id)
+                                                              Buffers: shared hit=843
+                                                              ->  Seq Scan on hdb_building b  (cost=0.00..212.14 rows=10014 width=8) (actual time=0.012..0.244 rows=10014.00 loops=3)
+                                                                    Buffers: shared hit=336
+                                                              ->  Hash  (cost=1207.91..1207.91 rows=3068 width=6) (actual time=5.878..5.878 rows=9246.00 loops=3)
+                                                                    Buckets: 16384 (originally 4096)  Batches: 1 (originally 1)  Memory Usage: 472kB
+                                                                    Buffers: shared hit=507
+                                                                    ->  Nested Loop  (cost=631.62..1207.91 rows=3068 width=6) (actual time=2.919..5.497 rows=9246.00 loops=3)
+                                                                          Join Filter: (((min(proximity.distance_m)) >= l.min_dist_m) AND ((min(proximity.distance_m)) < l.max_dist_m))
+                                                                          Rows Removed by Join Filter: 18492
+                                                                          Buffers: shared hit=507
+                                                                          ->  HashAggregate  (cost=631.62..723.66 rows=9204 width=36) (actual time=2.897..3.233 rows=9246.00 loops=3)
+                                                                                Group Key: proximity.building_id
+                                                                                Batches: 1  Memory Usage: 1041kB
+                                                                                Buffers: shared hit=504
+                                                                                Worker 0:  Batches: 1  Memory Usage: 1041kB
+                                                                                Worker 1:  Batches: 1  Memory Usage: 1041kB
+                                                                                ->  Seq Scan on proximity  (cost=0.00..477.08 rows=30908 width=10) (actual time=0.014..0.665 rows=30908.00 loops=3)
+                                                                                      Buffers: shared hit=504
+                                                                          ->  Materialize  (cost=0.00..1.04 rows=3 width=11) (actual time=0.000..0.000 rows=3.00 loops=27738)
+                                                                                Storage: Memory  Maximum Storage: 17kB
+                                                                                Buffers: shared hit=3
+                                                                                ->  Seq Scan on proximity_level l  (cost=0.00..1.03 rows=3 width=11) (actual time=0.018..0.018 rows=3.00 loops=3)
+                                                                                      Buffers: shared hit=3
+                                                        ->  Hash  (cost=1.27..1.27 rows=27 width=14) (actual time=0.021..0.021 rows=27.00 loops=3)
+                                                              Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                                                              Buffers: shared hit=3
+                                                              ->  Seq Scan on town t  (cost=0.00..1.27 rows=27 width=14) (actual time=0.017..0.018 rows=27.00 loops=3)
+                                                                    Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=24
+Planning Time: 0.364 ms
+Execution Time: 83.456 ms

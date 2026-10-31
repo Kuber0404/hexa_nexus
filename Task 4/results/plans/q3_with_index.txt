@@ -1,0 +1,62 @@
+GroupAggregate  (cost=54196.64..54196.86 rows=10 width=100) (actual time=262.257..285.124 rows=369.00 loops=1)
+  Group Key: (round(avg(three_room.floor_area_sqm), 2)), three_room.town_name, r.sale_year
+  Buffers: shared hit=7660, temp read=2072 written=2074
+  CTE three_room
+    ->  Hash Join  (cost=3722.42..24150.61 rows=156386 width=25) (actual time=5.234..127.060 rows=310496.00 loops=1)
+          Hash Cond: (b.town_id = t.town_id)
+          Buffers: shared hit=7660
+          ->  Hash Join  (cost=3720.82..22892.12 rows=156386 width=19) (actual time=5.227..97.246 rows=310496.00 loops=1)
+                Hash Cond: (f.building_id = b.building_id)
+                Buffers: shared hit=7659
+                ->  Hash Join  (cost=3383.50..22144.11 rows=156386 width=19) (actual time=4.582..74.016 rows=310496.00 loops=1)
+                      Hash Cond: (rt.flat_id = f.flat_id)
+                      Buffers: shared hit=7547
+                      ->  Seq Scan on resale_transaction rt  (cost=0.00..16167.86 rows=987686 width=14) (actual time=0.002..20.271 rows=987686.00 loops=1)
+                            Buffers: shared hit=6291
+                      ->  Hash  (cost=3092.69..3092.69 rows=23265 width=13) (actual time=4.578..4.578 rows=23180.00 loops=1)
+                            Buckets: 32768  Batches: 1  Memory Usage: 1343kB
+                            Buffers: shared hit=1256
+                            ->  Seq Scan on hdb_flat f  (cost=0.00..3092.69 rows=23265 width=13) (actual time=0.002..3.716 rows=23180.00 loops=1)
+                                  Filter: (flat_type = '3 ROOM'::text)
+                                  Rows Removed by Filter: 123755
+                                  Buffers: shared hit=1256
+                ->  Hash  (cost=212.14..212.14 rows=10014 width=8) (actual time=0.643..0.644 rows=10014.00 loops=1)
+                      Buckets: 16384  Batches: 1  Memory Usage: 520kB
+                      Buffers: shared hit=112
+                      ->  Seq Scan on hdb_building b  (cost=0.00..212.14 rows=10014 width=8) (actual time=0.001..0.341 rows=10014.00 loops=1)
+                            Buffers: shared hit=112
+          ->  Hash  (cost=1.27..1.27 rows=27 width=14) (actual time=0.004..0.005 rows=27.00 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                Buffers: shared hit=1
+                ->  Seq Scan on town t  (cost=0.00..1.27 rows=27 width=14) (actual time=0.002..0.003 rows=27.00 loops=1)
+                      Buffers: shared hit=1
+  ->  Sort  (cost=30046.03..30046.05 rows=10 width=84) (actual time=262.174..275.532 rows=141756.00 loops=1)
+        Sort Key: (round(avg(three_room.floor_area_sqm), 2)) DESC, three_room.town_name, r.sale_year
+        Sort Method: external merge  Disk: 5424kB
+        Buffers: shared hit=7660, temp read=2072 written=2074
+        ->  Hash Join  (cost=26507.62..30045.86 rows=10 width=84) (actual time=194.633..221.157 rows=141756.00 loops=1)
+              Hash Cond: (r.town_name = three_room.town_name)
+              Buffers: shared hit=7660, temp read=1394 written=1394
+              ->  CTE Scan on three_room r  (cost=0.00..3127.72 rows=156386 width=52) (actual time=5.235..15.473 rows=310496.00 loops=1)
+                    Storage: Disk  Maximum Storage: 11149kB
+                    Buffers: shared hit=1371, temp read=1394 written=1
+              ->  Hash  (cost=26507.49..26507.49 rows=10 width=64) (actual time=189.377..189.378 rows=10.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=6289, temp written=1393
+                    ->  Limit  (cost=26507.47..26507.49 rows=10 width=64) (actual time=189.372..189.373 rows=10.00 loops=1)
+                          Buffers: shared hit=6289, temp written=1393
+                          ->  Sort  (cost=26507.47..26898.43 rows=156386 width=64) (actual time=189.371..189.371 rows=10.00 loops=1)
+                                Sort Key: (round(avg(three_room.floor_area_sqm), 2)) DESC, three_room.town_name
+                                Sort Method: top-N heapsort  Memory: 26kB
+                                Buffers: shared hit=6289, temp written=1393
+                                ->  HashAggregate  (cost=18033.26..23128.02 rows=156386 width=64) (actual time=189.270..189.361 rows=27.00 loops=1)
+                                      Group Key: three_room.town_name
+                                      Planned Partitions: 8  Batches: 1  Memory Usage: 553kB
+                                      Buffers: shared hit=6289, temp written=1393
+                                      ->  CTE Scan on three_room  (cost=0.00..3127.72 rows=156386 width=46) (actual time=0.000..164.241 rows=310496.00 loops=1)
+                                            Storage: Disk  Maximum Storage: 11149kB
+                                            Buffers: shared hit=6289, temp written=1393
+Planning:
+  Buffers: shared hit=24
+Planning Time: 0.153 ms
+Execution Time: 286.085 ms

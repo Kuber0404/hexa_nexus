@@ -1,0 +1,121 @@
+condition,query,run,runtime_ms,rows_returned,result_md5,index_used,plan_changed,scans_in_plan,combo_size_mb,step
+C1,Q1,1,16.324,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q1,2,16.319,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q1,3,16.078,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q1,4,17.967,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q1,5,16.938,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q2,1,434.586,90,ac273f87fcff,False,False,Seq Scan,6.73,5
+C1,Q2,2,436.582,90,ac273f87fcff,False,False,Seq Scan,6.73,5
+C1,Q2,3,407.305,90,ac273f87fcff,False,False,Seq Scan,6.73,5
+C1,Q2,4,380.348,90,ac273f87fcff,False,False,Seq Scan,6.73,5
+C1,Q2,5,384.381,90,ac273f87fcff,False,False,Seq Scan,6.73,5
+C1,Q3,1,214.392,369,017784c00b65,False,False,Seq Scan,6.73,5
+C1,Q3,2,409.28,369,017784c00b65,False,False,Seq Scan,6.73,5
+C1,Q3,3,251.502,369,017784c00b65,False,False,Seq Scan,6.73,5
+C1,Q3,4,214.876,369,017784c00b65,False,False,Seq Scan,6.73,5
+C1,Q3,5,280.059,369,017784c00b65,False,False,Seq Scan,6.73,5
+C1,Q4,1,70.42,68,ca094adbd55d,False,False,Seq Scan,6.73,5
+C1,Q4,2,70.26,68,ca094adbd55d,False,False,Seq Scan,6.73,5
+C1,Q4,3,70.761,68,ca094adbd55d,False,False,Seq Scan,6.73,5
+C1,Q4,4,69.559,68,ca094adbd55d,False,False,Seq Scan,6.73,5
+C1,Q4,5,91.101,68,ca094adbd55d,False,False,Seq Scan,6.73,5
+C1,Q5,1,221.53,2,b9051d8ccd15,False,False,Seq Scan,6.73,5
+C1,Q5,2,244.987,2,b9051d8ccd15,False,False,Seq Scan,6.73,5
+C1,Q5,3,227.227,2,b9051d8ccd15,False,False,Seq Scan,6.73,5
+C1,Q5,4,231.269,2,b9051d8ccd15,False,False,Seq Scan,6.73,5
+C1,Q5,5,229.543,2,b9051d8ccd15,False,False,Seq Scan,6.73,5
+C1,Q6,1,36.213,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q6,2,36.276,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q6,3,36.148,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q6,4,36.266,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1,Q6,5,37.647,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,6.73,5
+C1+C6,Q1,1,15.178,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q1,2,14.704,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q1,3,14.667,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q1,4,14.596,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q1,5,14.704,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q2,1,462.438,90,ac273f87fcff,False,False,Seq Scan,7.73,5
+C1+C6,Q2,2,423.837,90,ac273f87fcff,False,False,Seq Scan,7.73,5
+C1+C6,Q2,3,395.677,90,ac273f87fcff,False,False,Seq Scan,7.73,5
+C1+C6,Q2,4,382.674,90,ac273f87fcff,False,False,Seq Scan,7.73,5
+C1+C6,Q2,5,417.279,90,ac273f87fcff,False,False,Seq Scan,7.73,5
+C1+C6,Q3,1,208.234,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q3,2,209.215,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q3,3,208.543,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q3,4,206.923,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q3,5,205.738,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q4,1,69.804,68,ca094adbd55d,False,False,Seq Scan,7.73,5
+C1+C6,Q4,2,69.322,68,ca094adbd55d,False,False,Seq Scan,7.73,5
+C1+C6,Q4,3,67.341,68,ca094adbd55d,False,False,Seq Scan,7.73,5
+C1+C6,Q4,4,67.95,68,ca094adbd55d,False,False,Seq Scan,7.73,5
+C1+C6,Q4,5,69.305,68,ca094adbd55d,False,False,Seq Scan,7.73,5
+C1+C6,Q5,1,206.101,2,b9051d8ccd15,False,False,Seq Scan,7.73,5
+C1+C6,Q5,2,208.615,2,b9051d8ccd15,False,False,Seq Scan,7.73,5
+C1+C6,Q5,3,207.191,2,b9051d8ccd15,False,False,Seq Scan,7.73,5
+C1+C6,Q5,4,206.279,2,b9051d8ccd15,False,False,Seq Scan,7.73,5
+C1+C6,Q5,5,205.501,2,b9051d8ccd15,False,False,Seq Scan,7.73,5
+C1+C6,Q6,1,34.53,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q6,2,34.879,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q6,3,34.424,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q6,4,33.877,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C6,Q6,5,34.633,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,7.73,5
+C1+C4,Q1,1,14.491,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q1,2,14.489,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q1,3,14.517,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q1,4,14.701,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q1,5,14.526,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q2,1,384.424,90,ac273f87fcff,False,False,Seq Scan,16.45,5
+C1+C4,Q2,2,384.272,90,ac273f87fcff,False,False,Seq Scan,16.45,5
+C1+C4,Q2,3,386.253,90,ac273f87fcff,False,False,Seq Scan,16.45,5
+C1+C4,Q2,4,385.267,90,ac273f87fcff,False,False,Seq Scan,16.45,5
+C1+C4,Q2,5,383.577,90,ac273f87fcff,False,False,Seq Scan,16.45,5
+C1+C4,Q3,1,210.745,369,017784c00b65,False,False,Seq Scan,16.45,5
+C1+C4,Q3,2,211.319,369,017784c00b65,False,False,Seq Scan,16.45,5
+C1+C4,Q3,3,210.43,369,017784c00b65,False,False,Seq Scan,16.45,5
+C1+C4,Q3,4,210.605,369,017784c00b65,False,False,Seq Scan,16.45,5
+C1+C4,Q3,5,212.395,369,017784c00b65,False,False,Seq Scan,16.45,5
+C1+C4,Q4,1,71.289,68,ca094adbd55d,False,False,Seq Scan,16.45,5
+C1+C4,Q4,2,67.962,68,ca094adbd55d,False,False,Seq Scan,16.45,5
+C1+C4,Q4,3,69.797,68,ca094adbd55d,False,False,Seq Scan,16.45,5
+C1+C4,Q4,4,72.911,68,ca094adbd55d,False,False,Seq Scan,16.45,5
+C1+C4,Q4,5,71.008,68,ca094adbd55d,False,False,Seq Scan,16.45,5
+C1+C4,Q5,1,206.725,2,b9051d8ccd15,False,False,Seq Scan,16.45,5
+C1+C4,Q5,2,206.762,2,b9051d8ccd15,False,False,Seq Scan,16.45,5
+C1+C4,Q5,3,205.92,2,b9051d8ccd15,False,False,Seq Scan,16.45,5
+C1+C4,Q5,4,205.931,2,b9051d8ccd15,False,False,Seq Scan,16.45,5
+C1+C4,Q5,5,205.848,2,b9051d8ccd15,False,False,Seq Scan,16.45,5
+C1+C4,Q6,1,34.577,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q6,2,34.489,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q6,3,34.701,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q6,4,34.841,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+C4,Q6,5,34.822,11,dc835d1ec4ec,True,True,Index Scan; Bitmap Index Scan; Seq Scan,16.45,5
+C1+all small/FK,Q1,1,14.762,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q1,2,14.723,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q1,3,14.675,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q1,4,14.584,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q1,5,14.542,52,9ee1a8bce939,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q2,1,391.01,90,ac273f87fcff,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q2,2,385.35,90,ac273f87fcff,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q2,3,389.822,90,ac273f87fcff,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q2,4,396.251,90,ac273f87fcff,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q2,5,386.586,90,ac273f87fcff,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q3,1,207.687,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q3,2,209.377,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q3,3,207.775,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q3,4,207.878,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q3,5,209.456,369,017784c00b65,True,True,Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q4,1,71.257,68,ca094adbd55d,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q4,2,69.726,68,ca094adbd55d,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q4,3,68.653,68,ca094adbd55d,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q4,4,70.178,68,ca094adbd55d,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q4,5,71.037,68,ca094adbd55d,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q5,1,236.791,2,b9051d8ccd15,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q5,2,210.765,2,b9051d8ccd15,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q5,3,204.807,2,b9051d8ccd15,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q5,4,204.669,2,b9051d8ccd15,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q5,5,204.607,2,b9051d8ccd15,False,False,Seq Scan,18.7,5
+C1+all small/FK,Q6,1,32.44,11,dc835d1ec4ec,True,True,Index Only Scan; Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q6,2,32.291,11,dc835d1ec4ec,True,True,Index Only Scan; Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q6,3,31.957,11,dc835d1ec4ec,True,True,Index Only Scan; Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q6,4,32.114,11,dc835d1ec4ec,True,True,Index Only Scan; Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
+C1+all small/FK,Q6,5,32.372,11,dc835d1ec4ec,True,True,Index Only Scan; Index Scan; Bitmap Index Scan; Seq Scan,18.7,5
