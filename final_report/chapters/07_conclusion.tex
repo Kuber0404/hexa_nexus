@@ -1,0 +1,19 @@
+\section{Conclusion and Limitations}
+
+\subsection{What we delivered}
+Hexa Nexus built a PostgreSQL backend that links HDB resale transactions to hawker centres through an estimated walking-distance proximity model.
+The seven-table schema is populated through an automated ETL process, with five cumulative datasets reaching 987{,}686 transactions.
+Six SQL queries answer the required analytics questions (Q6 joins all tables).
+The runtime measurements show different responses to the added data. Q1 and Q6 retain a fixed date window and change little, while Q2 and Q3 become slower.
+A B-tree on \texttt{resale\_transaction(transaction\_month)} speeds Q1 by $30.8\%$ on the largest database and leaves Q2--Q5 plans unchanged; Q6's $+6.1\%$ mean change stays within the project's noise rule.
+
+\subsection{Limitations}
+\begin{itemize}
+  \item \textbf{Proximity} is Haversine $\times 1.5$, not a routed walk; pairs beyond $2{,}400\,\mathrm{m}$ are omitted.
+  \item \textbf{Missing coordinates} prevent proximity calculation for 140 buildings and one hawker centre. Transactions for those buildings remain available to Q1--Q3.
+  \item \textbf{Prices across eras} are not inflation-adjusted; insights use step~1, while scaling uses all steps.
+  \item \textbf{Approval vs registration} dating in older files can distort derived remaining lease.
+  \item \textbf{Hawker--price gaps} are observational associations, not causal effects of proximity or centre type.
+  \item \textbf{Performance} measurements use a single-machine setup and a working set small enough to be cached. Task~4 uses one warm-up before five timed runs per condition. Task~3 has no dedicated warm-up in its timing loop, although queries are executed earlier in the notebook. Cold-cache and concurrent-user workloads were not tested.
+  \item \textbf{Screening baselines} drifted between start and end blocks; pooled candidate percentages are therefore limited evidence.
+\end{itemize}

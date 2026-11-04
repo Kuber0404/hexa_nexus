@@ -151,8 +151,8 @@ These were agreed after comparing the first Task 1 design with the first ETL:
 - Step 1 uses the 2017 onwards file, because Q1 needs a 3-year range and the 2015–2016 file covers only two years.
 - Q5's budget is SGD 450,000. The first value, 600,000, returned no rows at steps 4 and 5.
 - Query insights use step 1. Later steps mix prices from 1990 to 2026 without inflation adjustment.
-- Task 4 keeps one index, a B-tree on `resale_transaction(transaction_month)`. It makes Q1 about 30% faster and Q6 about 10% slower; Q2–Q5 are unaffected. Eight other candidates were tested and rejected (see `task4_report.md`).
-- A BRIN index on the same column helped Q1 and Q6 and is much smaller, but it is not submitted: it only works when the dates follow the physical row order, which is a side effect of how the files were loaded.
+- Task 4 keeps one index, a B-tree on `resale_transaction(transaction_month)`. On the saved final measurement (`results/task4_summary.csv`) it makes Q1 30.8% faster (21.56 → 14.93 ms, 1.44×) and Q6 6.1% slower (32.62 → 34.61 ms; plan changed, within the project's noise rule); Q2–Q5 are unaffected. Eight other candidates were tested and rejected (see `task4_report.md`).
+- A BRIN index on the same column also helped in the screening archive and is much smaller, but it is not submitted: it only works when the dates follow the physical row order, which is a side effect of how the files were loaded.
 
 ## Known data issues
 

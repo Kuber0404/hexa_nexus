@@ -1,0 +1,63 @@
+\section{Supplementary Tables and Artefact Checklist}
+\label{app:artefacts}
+
+\subsection{Task 4 supporting experiments}
+Source: \texttt{Task 4/results/task4\_supporting\_experiments.csv} (five timed runs each).
+
+\begin{table}[H]
+\centering
+\caption{Session-setting and query-rewrite experiments (means of five client runs, ms).}
+\label{tab:support}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Query & Condition & Mean & Sample SD \\
+\midrule
+Q2 & default \texttt{work\_mem} & 417.0 & 64.7 \\
+Q2 & \texttt{work\_mem = 256MB} & 356.4 & 5.8 \\
+Q3 & as written (materialised) & 210.2 & 0.4 \\
+Q3 & \texttt{NOT MATERIALIZED} & 109.9 & 1.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Q2 default block includes a $532.036\,\mathrm{ms}$ run that raises its mean and the apparent benefit of increasing memory.
+
+\subsection{Task 4 index cost}
+Source: \texttt{Task 4/results/task4\_index\_cost.csv}.
+
+\begin{table}[H]
+\centering
+\caption{Submitted index size, build and insert cost.}
+\begin{tabular}{@{}lr@{}}
+\toprule
+Metric & Value \\
+\midrule
+Index size & $6.73\,\mathrm{MB}$ \\
+Table heap & $49.1\,\mathrm{MB}$ \\
+Size / heap & $13.7\%$ \\
+Build + \texttt{ANALYZE} & $148.4\,\mathrm{ms}$ \\
+Insert 100k without index (mean of 3) & $203.0\,\mathrm{ms}$ \\
+Insert 100k with index (mean of 3) & $288.9\,\mathrm{ms}$ \\
+Insert slowdown & $+42.4\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Recommended execution order}
+\begin{enumerate}
+  \item Run Task~2 notebook with \texttt{STEP}${}=1\ldots5$ $\rightarrow$ \texttt{data/processed\_steps/step\_$k$/}.
+  \item \texttt{DROP SCHEMA IF EXISTS housing CASCADE;} then \texttt{schema.sql}.
+  \item Edit paths in \texttt{load\_data.sql} and \texttt{COPY} the chosen step.
+  \item Task~3 notebook: set \texttt{DB\_NAME}, \texttt{STEP}; produce screenshots and replace the timing records for the selected step.
+  \item Load step~5, \texttt{VACUUM (ANALYZE)} all tables, run Task~4 notebook.
+\end{enumerate}
+
+\subsection{Attachment checklist (outside this PDF)}
+\begin{itemize}
+  \item \texttt{Task 1/revised/schema.sql}, \texttt{er\_diagram.png}, \texttt{load\_data.sql}
+  \item \texttt{Task 2/notebook/Data Systems Task 2 (revised).ipynb}
+  \item \texttt{Task 3/queries.sql}; \texttt{results/task3\_measurements.csv} (150 rows); screenshots; runtime plot
+  \item \texttt{Task 4/indexes.sql}; \texttt{results/task4\_measurements.csv} (60 rows); screening/combination/cost/supporting CSVs; plans; bar chart
+  \item \texttt{data/processed\_steps/step\_1}\ldots\texttt{step\_5/} including \texttt{data\_quality\_report.txt}
+\end{itemize}
+The CSV attachments contain the individual timing records.

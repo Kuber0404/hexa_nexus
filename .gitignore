@@ -1,1 +1,11 @@
 .venv
+# LaTeX build intermediates (keep final_report/main.pdf)
+final_report/*.aux
+final_report/*.bbl
+final_report/*.blg
+final_report/*.fdb_latexmk
+final_report/*.fls
+final_report/*.log
+final_report/*.out
+final_report/*.toc
+final_report/*.synctex.gz

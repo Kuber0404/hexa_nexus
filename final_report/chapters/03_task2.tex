@@ -1,0 +1,72 @@
+\section{Task 2 --- Data Acquisition and Population}
+
+\subsection{Automated ETL}
+The executable ETL is \texttt{Task 2/notebook/Data Systems Task 2 (revised).ipynb}.
+It reads the selected resale file(s), the NEA hawker list, \texttt{hawker\_geo.csv} and \texttt{hdb.csv}, validates against Task~1 constraints, and writes one CSV per table under \texttt{data/processed\_steps/step\_$k$/}, ready for \texttt{COPY}.
+Missing values are filled from supplementary sources or retained as NULL where the schema permits. Transactions are retained when coordinates are unavailable.
+The \texttt{STEP} setting selects how many resale files to process, using the same code for all five datasets.
+
+\subsection{Transformations and computations}
+Table~\ref{tab:etl} summarises the transformations. Postal codes provide a better initial match between the hawker files than centre names, matching 104 of 107 centres compared with 17 by name.
+
+\begin{table}[H]
+\centering
+\caption{Key ETL transformations.}
+\label{tab:etl}
+\footnotesize
+\begin{tabular}{@{}p{2.2cm}p{5.4cm}p{5.6cm}@{}}
+\toprule
+Input & Transformation & Reason \\
+\midrule
+Resale & Trim/upper-case town, block, street, type, model & Canonical spelling \\
+Resale & \texttt{month} $\to$ DATE; storey range $\to$ two integers & Atomic typed columns \\
+Resale & Remaining lease text $\to$ months; NULL if column absent & Consistent unit; missing values retained \\
+Resale & \texttt{MULTI GENERATION} $\to$ \texttt{MULTI-GENERATION} & Match the schema spelling \\
+Resale & Split into town, building, flat, transaction + surrogate keys & Remove repetition \\
+Buildings & Coordinates: \texttt{hdb.csv}, then OneMap, else NULL & Offline first \\
+Hawkers & Join gov list and geo file on postal code & Stable join key \\
+Proximity & Haversine $\times 1.5$; keep $<2{,}400\,\mathrm{m}$ & Task~1 walking estimate \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Five cumulative database sizes}
+Because Q1 needs a three-year window, step~1 starts from the January~2017 onwards file rather than 2015--2016.
+Older files are then added in reverse chronological order; each step keeps prior sales (Table~\ref{tab:steps}).
+At step~5 the quality report records 987{,}686 transactions spanning 1990-01 to 2026-09, 10{,}014 buildings, 146{,}935 flat profiles, 131 hawker centres and 30{,}908 proximity pairs.
+
+\begin{table}[H]
+\centering
+\caption{Cumulative ETL steps (sales counts from quality reports / Task~3 summary).}
+\label{tab:steps}
+\begin{tabular}{@{}clrr@{}}
+\toprule
+Step & File added & Period covered & Sales \\
+\midrule
+1 & Jan 2017 onwards & 2017--2026 & 241{,}483 \\
+2 & Jan 2015 -- Dec 2016 & 2015--2026 & 278{,}636 \\
+3 & Mar 2012 -- Dec 2014 & 2012--2026 & 330{,}839 \\
+4 & 2000 -- Feb 2012 & 2000--2026 & 700{,}490 \\
+5 & 1990 -- 1999 & 1990--2026 & 987{,}686 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Coverage gaps that affect proximity queries}
+At full load, 140 buildings have NULL coordinates (\texttt{coordinate\_source = none}) and therefore no proximity pairs.
+Another 10 matched OneMap on block number only.
+One hawker centre lacks coordinates.
+Of 10{,}014 buildings, 9{,}246 have at least one hawker within $2{,}400\,\mathrm{m}$; 768 have none.
+Sales on buildings without a proximity class remain in the database and contribute to Q1--Q3, but are excluded from Q4--Q6.
+Files before 2015 have no \texttt{remaining\_lease} column: 709{,}050 transactions store NULL for reported remaining lease; Q2 derives years from lease commence year instead.
+
+\subsection{Loading issues and fixes}
+Client \verb|\copy| failed in our SQL tool (a syntax error at the backslash); we switched to server-side \texttt{COPY} with absolute paths.
+Re-running \texttt{schema.sql} without a prior drop aborted on \texttt{schema "housing" already exists}; reloads now start with \texttt{DROP SCHEMA housing CASCADE}.
+One incomplete load left \texttt{proximity} empty until reloaded.
+Surrogate keys are renumbered every ETL run, so each step reloads all seven tables rather than appending.
+Validation identified 279 rows using the older \texttt{MULTI GENERATION} spelling, which we mapped to the schema spelling. Moving raw files under \texttt{data/raw/} also required correcting the notebook's input paths.
+
+\subsection{Supplementary material}
+The revised notebook is the executable deliverable for Task~2.
+Each step folder also contains \texttt{data\_quality\_report.txt} documenting row counts, key checks, constraint violations (all zero in the saved validation reports) and NULL profiles.

@@ -1,0 +1,53 @@
+\section{Introduction and Data Sources}
+
+We built a PostgreSQL database linking HDB resale transactions to nearby hawker centres~\cite{datagovHDB,datagovHawker}.
+The database supports queries on resale prices, flat attributes, remaining lease and hawker proximity.
+This report explains our schema, data processing, six SQL queries and performance experiments on PostgreSQL~18.
+
+\subsection{Objectives}
+The project has five objectives.
+\begin{enumerate}
+  \item design a proximity-aware ER model and a constrained seven-table schema;
+  \item acquire and transform official open data into one CSV per table;
+  \item answer required queries Q1--Q5 plus an original Q6 that joins every table;
+  \item measure client-side runtime as the database grows from one to five resale files;
+  \item select and evaluate indexes on the largest database.
+\end{enumerate}
+
+\subsection{Datasets}
+Table~\ref{tab:datasets} lists the inputs used by the revised ETL.
+Resale files span January~1990 through September~2026; earlier files record approval date and later files registration date~\cite{datagovHDB}.
+Hawker attributes come from the NEA government list~\cite{datagovHawker}; coordinates come from course-provided \texttt{hawker\_geo.csv}~\cite{hawkerGeo}.
+HDB block coordinates come primarily from \texttt{hdb.csv}~\cite{siteselectHDB}, with OneMap as a cached fallback~\cite{onemap}.
+
+\begin{table}[H]
+\centering
+\caption{Source datasets used in this project.}
+\label{tab:datasets}
+\begin{tabularx}{\textwidth}{@{}p{3.1cm}p{4.2cm}X@{}}
+\toprule
+Source & Role & Coverage / notes \\
+\midrule
+HDB resale (5 CSV files) & Transactions, flat attributes, towns & 1990--2026; 987{,}686 sales at full load \\
+NEA hawker list & Centre type, stall counts, address & 107 government centres \\
+\texttt{hawker\_geo.csv} & Hawker coordinates & From NTULearn GeoJSON extract \\
+\texttt{hdb.csv} & Building coordinates & BlueSkyLT/\texttt{siteselect\_sg} \\
+OneMap Search API & Fallback geocoding & Cached under \texttt{data/cache/} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Pipeline overview}
+We use the same ETL code to build five cumulative datasets, then load each into the seven-table schema.
+Q1--Q6 are measured at each size before indexes are evaluated on the largest database (Figure~\ref{fig:pipeline}).
+Executable artefacts are listed in Appendix~\ref{app:artefacts}.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.92\textwidth}{\centering\small
+Raw CSVs $\rightarrow$ Python ETL $\rightarrow$ 7 table CSVs $\rightarrow$
+\texttt{schema.sql} + \texttt{COPY} $\rightarrow$ PostgreSQL\\[0.4em]
+$\rightarrow$ Q1--Q6 + timing (5 sizes) $\rightarrow$ index screening $\rightarrow$ final \texttt{CREATE INDEX}}}
+\caption{End-to-end pipeline implemented in the Hexa Nexus repository.}
+\label{fig:pipeline}
+\end{figure}

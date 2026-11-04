@@ -15,10 +15,11 @@
 -- Why: Q1 and Q6 keep only the sales of 2022-2024 (about 8% of the 987,686 rows).
 -- Without an index PostgreSQL reads every row and discards 92% of them.
 --
--- Measured effect (5 runs each, same database, final protocol):
---   Q1  20.9 ms -> 14.6 ms   (-30%, plan changed to a bitmap index scan)
---   Q6  31.8 ms -> 34.9 ms   (+10%, index used, slightly slower)
---   Q2-Q5: plan unchanged (they read most or all sales), no effect.
+-- Measured effect (5 timed runs each after 1 warm-up, same database, Part C of
+-- the Task 4 notebook; source: results/task4_summary.csv):
+--   Q1  21.56 ms -> 14.93 ms   (-30.8%, 1.44x; plan changed to a bitmap index scan)
+--   Q6  32.62 ms -> 34.61 ms   (+6.1%, index used; within the project's noise rule)
+--   Q2-Q5: plan unchanged (they read most or all sales), no effect under that rule.
 --
 -- Why a plain B-tree:
 --   * It does not depend on how the rows are stored. A BRIN index only skips
@@ -26,21 +27,20 @@
 --     from the order the CSV files were loaded and is not guaranteed by the
 --     schema. A B-tree keeps its benefit if the table is reloaded, updated or
 --     reordered, and it also supports exact-date lookups and ORDER BY.
---   * On the query it was built for it performed similarly to the alternatives:
---     Q1 improved by about 30% with the B-tree, and by a similar amount with
---     BRIN and with the covering B-tree.
---   * The covering variant gave only a marginal extra gain (about 1 ms on Q1) at four times the size
---     (29.7 MB vs 6.7 MB).
---   * Trade-off accepted: BRIN was smaller (0.02 MB) and also improved Q6 in
---     the screening, while the B-tree makes Q6 about 3 ms slower. The B-tree
---     was chosen for robustness, not for being the fastest option measured.
--- 
--- 
--- 
+--   * On the query it was built for it performed similarly to the alternatives
+--     in the screening archive: Q1 improved under the noticeability rule with
+--     the B-tree, BRIN and the covering B-tree.
+--   * The covering variant gave only a marginal extra gain (about 0.85 ms on Q1)
+--     at four times the size (29.7 MB vs 6.7 MB).
+--   * Trade-off accepted: BRIN was smaller (0.02 MB) and looked strong on Q6 in
+--     the screening archive against a drifted pooled baseline, while the B-tree's
+--     final Q6 change is +6.1% (within the noise rule). The B-tree was chosen for
+--     robustness, not for being the fastest option measured in every experiment.
+--
 -- Not created (tested, rejected): indexes on resale_transaction(flat_id) made
 -- Q6 much slower; indexes on hdb_flat(flat_type), hdb_building(town_id),
 -- proximity(hawker_id) and proximity(building_id, distance_m, hawker_id) had no
--- measurable effect and would only cost space and slow inserts.
+-- noticeable effect under the project's rule and would only cost space and slow inserts.
 -- -----------------------------------------------------------------------------
 CREATE INDEX idx_resale_transaction_month
     ON housing.resale_transaction (transaction_month);

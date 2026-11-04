@@ -1,0 +1,125 @@
+% Hexa Nexus --- SD6103 Data Systems Final Report (AY26S1)
+% Compile from this directory:
+%   latexmk -pdf -interaction=nonstopmode main.tex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage{array}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue!50!black,
+  pdftitle={Hexa Nexus --- HDB Resale and Hawker Centre Data System},
+  pdfauthor={Team Hexa Nexus}
+}
+
+\setstretch{1.08}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+\setlist{nosep,leftmargin=*}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small SD6103 Data Systems}
+\fancyhead[R]{\small Hexa Nexus}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[L]{\small SD6103 Data Systems}%
+  \fancyhead[R]{\small Hexa Nexus}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0.3pt}%
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.6em}{}
+
+\lstdefinestyle{sqlstyle}{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black!30},
+  framesep=4pt,
+  xleftmargin=2pt,
+  xrightmargin=2pt,
+  aboveskip=0.6em,
+  belowskip=0.6em,
+  tabsize=2,
+  commentstyle=\color{black!45}\itshape,
+  keywordstyle=\bfseries,
+  morekeywords={CREATE,INDEX,ANALYZE,SCHEMA,TABLE,PRIMARY,KEY,FOREIGN,REFERENCES,UNIQUE,CHECK,CONSTRAINT,NOT,NULL,BEGIN,COMMIT,SELECT,FROM,WHERE,JOIN,ON,GROUP,BY,ORDER,LIMIT,WITH,AS,CASE,WHEN,THEN,ELSE,END,AND,OR,IN,BETWEEN,DISTINCT,COALESCE,ROUND,AVG,COUNT,MAX,MIN,FILTER,HAVING,UNION,INSERT,INTO,DROP,IF,EXISTS,USING,INCLUDE,EXCLUDE,GIST}
+}
+\lstset{style=sqlstyle}
+\renewcommand{\lstlistingname}{Listing}
+
+\newcommand{\TODO}[1]{\textcolor{red!70!black}{\textbf{[[TODO: #1]]}}}
+
+\begin{document}
+
+% ---------------------------------------------------------------------------
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{3.2cm}
+{\LARGE\bfseries SD6103 Data Systems}\\[0.6em]
+{\Large AY26S1 Project Report}\\[2.2em]
+{\large Team Hexa Nexus}\\[1.4em]
+\begin{tabular}{c}
+Bellad Kuber Vijaykumar \\
+Gupta Anant \\
+Jain Rishabh \\
+Jiang Binglin \\
+Mishra Ishika \\
+Ying Yue \\
+\end{tabular}\\[2.4em]
+Submission date: 13 November 2026
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\input{chapters/01_intro}
+\input{chapters/02_task1}
+\input{chapters/03_task2}
+\input{chapters/04_task3_queries}
+\input{chapters/05_task3_perf}
+\input{chapters/06_task4}
+\input{chapters/07_conclusion}
+\input{chapters/08_ai}
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\appendix
+\input{appendix/A_schema}
+\input{appendix/B_queries}
+\input{appendix/C_indexes}
+\input{appendix/D_supplementary}
+
+\end{document}
